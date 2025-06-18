@@ -40,72 +40,110 @@
                 font-size: 1.8rem;
                 margin-right: 0.5rem;
             }
+            .modal-backdrop.show {
+            opacity: 1;
+            background-color: #ffffff;
+        }
+        
+        body.modal-open {
+            overflow: hidden;
+        }
+        .feature-card {
+            background: linear-gradient(to right, #e8f5e9, #ffffff);
+            border-radius: 10px;
+            padding: 2rem;
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(25, 135, 84, 0.2);
+        }
         </style>
     </head>
     <body class="bg-light">
         
-        <!--inserimento città-->
-        <div class="container-fluid p-4">
-            <div class="city-header">
-                <label class="text-accent">
-                    <i class="bi bi-buildings-fill city-icon"></i>
-                    Gestione Anagrafica Città
-                </label>
-                <div class="text-center d-flex align-items-center justify-content-center gap-3">
-                    <span class="text-success fs-5">Vuoi inserire una città?</span>
-                    <a href="InserimentoCitta.php" class="btn btn-success rounded-circle add-btn" 
-                       title="Aggiungi nuova città">
-                        <i class="bi bi-plus-lg fs-3"></i>
-                    </a>
+       <!-- Modal di Benvenuto -->
+        <div class="modal fade" id="welcomeModal" data-bs-backdrop="static" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-sm">
+                <div class="modal-content bg-light shadow-lg border-0">
+                    <div class="modal-body p-4 text-center">
+                        <div class="mb-4">
+                            <i class="bi bi-emoji-smile text-success" style="font-size: 3rem;"></i>
+                        </div>
+                        <h4 class="mb-3 text-success fw-bold">Benvenuto!</h4>
+                        <p class="text-muted mb-4">Premi il pulsante per accedere al gestionale</p>
+                        <button type="button" 
+                                class="btn btn-success btn-lg w-100 rounded-3" 
+                                data-bs-dismiss="modal">
+                            Accedi
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-            <!--inserimento studente-->
-        <div class="container-fluid p-4">
-    <div class="city-header">
-        <label class="text-accent">
-            <i class="bi bi-person-fill city-icon"></i>
-            Gestione Anagrafica Studenti
-        </label>
-        <div class="text-center d-flex align-items-center justify-content-center gap-3">
-            <span class="text-success fs-5">Vuoi inserire uno studente?</span>
-            <a href="InserimentoStudente.php" class="btn btn-success rounded-circle add-btn" 
-               title="Aggiungi nuovo studente">
-                <i class="bi bi-plus-lg fs-3"></i>
-            </a>
-        </div>
-    </div>
-</div>
-        <div class="container mt-5">
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <div class="card shadow">
-                        <div class="card-body">
-                            <h1 class="card-title text-center mb-4">Elenco studenti per città</h1>
-                            <form action="ElencoCitta.php" method="post">
-                                <div class="mb-3">
-                                    <label for="citta" class="form-label">Scegli la città degli studenti da visualizzare:</label>
-                                    <select class="form-select" name="citta" id="citta">
-                                        <?php
-                                        $conn=mysqli_connect("localhost", "root", "","StudentiFullStack");
-                                        if (!$conn){
-                                            die ("impossibile connettersi al database: " . mysqli_connect_error($conn));
-                                        }
-                                        $sql ="SELECT DISTINCT * FROM citta";
-                                        $result = mysqli_query($conn, $sql);
 
-                                        while ($row=mysqli_fetch_array($result)){
-                                        ?>
-                                            <option value="<?php echo $row["CodiceIstat"]; ?>"> <?php echo $row["Nome"]; ?> </option>
-                                        <?php
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary" name="invio">Cerca</button>
-                                </div>
-                            </form>
+        <!-- Layout Principale -->
+        <div class="container mt-5">
+            <!-- Prima Riga: Statistiche e Visualizzazione -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <div class="feature-card">
+                        <div class="d-flex flex-column align-items-center">
+                            <i class="bi bi-graph-up text-success fs-1 mb-3"></i>
+                            <h3 class="text-success mb-3">Statistiche Studenti</h3>
+                            <p class="text-muted mb-4">Visualizza il numero di studenti per città</p>
+                            <a href="NumeroStudenti.php" class="btn btn-success rounded-pill px-4">
+                                <i class="bi bi-bar-chart-fill me-2"></i>
+                                Vedi Statistiche
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="feature-card">
+                        <div class="d-flex flex-column align-items-center">
+                            <i class="bi bi-list-ul text-success fs-1 mb-3"></i>
+                            <h3 class="text-success mb-3">Elenco Studenti</h3>
+                            <p class="text-muted mb-4">Visualizza gli studenti per città</p>
+                            <a href="ContoStudenti.php" class="btn btn-success rounded-pill px-4">
+                                <i class="bi bi-eye me-2"></i>
+                                Vedi Elenco
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seconda Riga: Inserimenti -->
+            <div class="row g-4">
+                
+                <div class="col-md-6">
+                    <div class="feature-card">
+                        <div class="d-flex flex-column align-items-center">
+                            <i class="bi bi-buildings-fill text-success fs-1 mb-3"></i>
+                            <h3 class="text-success mb-3">Inserisci Città</h3>
+                            <p class="text-muted mb-4">Aggiungi una nuova città al database</p>
+                            <a href="InserimentoCitta.php" class="btn btn-success rounded-pill px-4">
+                                <i class="bi bi-plus-lg me-2"></i>
+                                Nuova Città
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colonna Inserimento Studenti -->
+                <div class="col-md-6">
+                    <div class="feature-card">
+                        <div class="d-flex flex-column align-items-center">
+                            <i class="bi bi-person-fill text-success fs-1 mb-3"></i>
+                            <h3 class="text-success mb-3">Inserisci Studente</h3>
+                            <p class="text-muted mb-4">Aggiungi un nuovo studente al database</p>
+                            <a href="InserimentoStudente.php" class="btn btn-success rounded-pill px-4">
+                                <i class="bi bi-plus-lg me-2"></i>
+                                Nuovo Studente
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -114,5 +152,19 @@
 
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Modifica lo script alla fine del file -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Prendi l'URL corrente
+                const currentPath = window.location.pathname;
+                
+                if (!sessionStorage.getItem('modalShown_' + currentPath)) {
+                    var myModal = new bootstrap.Modal(document.getElementById('welcomeModal'));
+                    myModal.show();
+                    sessionStorage.setItem('modalShown_' + currentPath, 'true');
+                }
+            });
+        </script>
+
     </body>
 </html>
